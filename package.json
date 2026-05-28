@@ -1,0 +1,31 @@
+{
+  "name": "ai-kiosk-agent-platform",
+  "version": "0.1.0",
+  "description": "Portfolio demo: conversational AI kiosk with Svelte edge UI, FastAPI orchestration, voice/vision services and MCP-style tools.",
+  "private": false,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "pnpm --filter ui-kiosk dev",
+    "build": "pnpm --filter ui-kiosk build",
+    "test": "pnpm --filter '*' test",
+    "format": "prettier --write \"**/*.{js,ts,svelte,json,md}\"",
+    "lint": "prettier --check \"**/*.{js,ts,svelte,json,md}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.1.1",
+    "prettier-plugin-svelte": "^3.1.2"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "svelte-preprocess"
+    ]
+  }
+}

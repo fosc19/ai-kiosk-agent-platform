@@ -1,0 +1,53 @@
+name: "Barge-in durante respuesta"
+description: "Usuario interrumpe mientras el asistente está hablando"
+
+# This golden flow validates F6 barge-in behavior:
+# 1. User asks a question
+# 2. AI Kiosk starts responding (TTS playing)
+# 3. User interrupts with new speech
+# 4. System stops TTS and processes new utterance
+
+input:
+  # Initial turn
+  text: "¿Dónde está Demo Fashion?"
+  # Barge-in occurs during response
+  barge_in:
+    trigger_after_ms: 500  # 500ms after TTS starts
+    new_utterance: "No espera, quiero ir a Urban Wear"
+
+expected:
+  # Original intent should be navigate to Demo Fashion
+  original_intent: "navigate"
+  original_store: "Demo Fashion"
+
+  # Barge-in should be detected
+  barge_in_detected: true
+  barge_in_latency_max_ms: 200  # F6 requirement: <200ms detection
+
+  # Final response should be about Urban Wear, not Demo Fashion
+  final_intent: "navigate"
+  final_store_query: "Urban Wear"
+  response_contains:
+    - "Urban Wear"
+  response_not_contains:
+    - "Demo Fashion"
+
+  # Events expected in trace
+  trace_events:
+    - type: "orch.turn_start"
+    - type: "speech.tts_start"
+    - type: "ui.barge_in"
+    - type: "speech.tts_stop"
+    - type: "orch.turn_start"  # New turn for Urban Wear
+    - type: "orch.turn_end"
+
+sla:
+  max_barge_in_latency_ms: 200
+  max_turn_latency_ms: 3000
+  max_tts_first_chunk_ms: 500
+
+tags:
+  - barge_in
+  - interruption
+  - f6
+  - critical

@@ -1,0 +1,152 @@
+version: '3.9'
+
+services:
+  # Redis for session management
+  redis:
+    image: redis:7.2-alpine
+    container_name: ai-kiosk-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # PostgreSQL for data (stores, routes, etc.)
+  postgres:
+    image: postgres:15-alpine
+    container_name: ai-kiosk-postgres-dev
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: kiosk
+      POSTGRES_USER: kiosk
+      POSTGRES_PASSWORD: kiosk_dev_password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ../data/seeds:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kiosk"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Vision service (face detection)
+  vision:
+    build:
+      context: ../services/vision
+      dockerfile: Dockerfile
+    container_name: ai-kiosk-vision-dev
+    ports:
+      - "9003:9003"
+    environment:
+      VISION_LOG_LEVEL: DEBUG
+    volumes:
+      - ../services/vision:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9003/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    command: python main.py
+
+  # Speech service (VAD + ASR + TTS - local by default)
+  speech:
+    build:
+      context: ../services/speech
+      dockerfile: Dockerfile
+    container_name: ai-kiosk-speech-dev
+    ports:
+      - "9001:9001"
+    environment:
+      SPEECH_LOG_LEVEL: DEBUG
+      SPEECH_ASR_MODE: local
+      SPEECH_TTS_MODE: local
+      SPEECH_TTS_CACHE_ENABLED: "true"
+      SPEECH_TTS_CACHE_PRELOAD: "true"
+      # Para usar APIs premium, descomentar:
+      # SPEECH_ASR_MODE: deepgram
+      # SPEECH_TTS_MODE: elevenlabs
+      # SPEECH_DEEPGRAM_API_KEY: ${DEEPGRAM_API_KEY}
+      # SPEECH_ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY}
+    volumes:
+      - ../services/speech:/app
+      - speech-models:/models
+      - speech-cache:/tmp/tts_cache
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9001/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    command: python main.py
+
+  # MCP Tools service (F4 - stores, routes, logging)
+  mcp-tools:
+    build:
+      context: ../services/mcp-tools
+      dockerfile: Dockerfile
+    container_name: ai-kiosk-mcp-tools-dev
+    ports:
+      - "9002:9002"
+    environment:
+      MCP_DATABASE_URL: postgresql://kiosk:kiosk_dev_password@postgres:5432/kiosk
+      MCP_TRANSPORT: http
+      MCP_LOG_LEVEL: DEBUG
+    volumes:
+      - ../services/mcp-tools/src:/app/src
+      - ../services/mcp-tools/alembic:/app/alembic
+      - ../data/seeds:/app/seeds
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9002/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Orchestrator service (WebSocket + routing + tools)
+  orchestrator:
+    build:
+      context: ../services/orchestrator
+      dockerfile: Dockerfile
+    container_name: ai-kiosk-orchestrator-dev
+    ports:
+      - "8765:8765"
+    environment:
+      REDIS_URL: redis://redis:6379
+      POSTGRES_URL: postgresql://kiosk:kiosk_dev_password@postgres:5432/kiosk
+      SPEECH_SERVICE_URL: http://speech:9001
+      VISION_SERVICE_URL: http://vision:9003
+      MCP_TOOLS_URL: http://mcp-tools:9002
+      LLM_MODE: mock
+      API_KEYS: dev_local_key_change_me
+      LOG_LEVEL: DEBUG
+    volumes:
+      - ../services/orchestrator:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      speech:
+        condition: service_healthy
+      vision:
+        condition: service_healthy
+      mcp-tools:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8765/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  redis-data:
+  postgres-data:
+  speech-models:
+  speech-cache:

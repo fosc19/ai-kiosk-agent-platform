@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "orchestrator"
+version = "0.1.0"
+description = "Orchestrator service - Core agente conversacional"
+authors = ["Pau Gaspar"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.108.0"
+uvicorn = {extras = ["standard"], version = "^0.25.0"}
+websockets = "^12.0"
+pydantic = "^2.5.0"
+pydantic-settings = "^2.1.0"
+redis = "^5.0.0"
+httpx = "^0.25.2"
+structlog = "^24.1.0"
+anthropic = "^0.40.0"
+google-generativeai = "^0.8.0"
+openai = "^1.50.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.0"
+pytest-mock = "^3.12.0"
+black = "^23.12.1"
+ruff = "^0.1.9"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

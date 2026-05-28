@@ -1,0 +1,21 @@
+name: "Saludo al kiosk"
+description: "Usuario saluda al kiosk"
+
+input:
+  text: "Hola, buenos días"
+
+expected:
+  intent: "greeting"
+  tool_calls: []
+  response_contains:
+    - "hola"
+  response_not_contains: []
+
+sla:
+  max_turn_latency_ms: 1500
+  max_asr_latency_ms: 400
+  max_llm_first_token_ms: 500
+
+tags:
+  - conversation
+  - basic

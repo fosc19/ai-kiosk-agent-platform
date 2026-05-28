@@ -1,0 +1,23 @@
+name: "Listar tiendas disponibles"
+description: "Usuario pregunta qué tiendas hay disponibles"
+
+input:
+  text: "¿Qué tiendas hay?"
+
+expected:
+  intent: "list_stores"
+  query_type: "list"
+  tool_calls:
+    - name: "list_stores"
+  response_contains: []
+  response_not_contains:
+    - "no hay tiendas"
+
+sla:
+  max_turn_latency_ms: 2000
+  max_asr_latency_ms: 500
+  max_llm_first_token_ms: 600
+
+tags:
+  - info
+  - basic

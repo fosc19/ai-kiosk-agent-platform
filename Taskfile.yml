@@ -1,0 +1,243 @@
+version: '3'
+
+tasks:
+  # ========== SETUP ==========
+  setup:
+    desc: "Setup completo en laptop (instalar deps)"
+    cmds:
+      - echo "📦 Instalando dependencias JavaScript..."
+      - pnpm install
+      - echo "🐍 Instalando dependencias Python..."
+      - poetry install
+      - echo "📋 Copiando archivos de ejemplo..."
+      - cp .env.dev.example .env || true
+      - cp apps/ui-kiosk/.env.example apps/ui-kiosk/.env || true
+      - cp services/orchestrator/.env.example services/orchestrator/.env || true
+      - cp services/mcp-tools/.env.example services/mcp-tools/.env || true
+      - echo ""
+      - echo "✅ Setup completo!"
+      - echo ""
+      - echo "⚠️  IMPORTANTE - Siguiente paso:"
+      - echo "   Edita services/orchestrator/.env y configura tu API key de LLM:"
+      - echo "   GEMINI_API_KEY=tu_key  (gratis en https://aistudio.google.com)"
+      - echo ""
+      - echo "   Luego ejecuta: task dev:vps  (y en otra terminal: task dev:ui)"
+
+  verify:
+    desc: "Verificar que el entorno esta correctamente configurado"
+    cmds:
+      - echo "🔍 Verificando prerequisitos..."
+      - node -v | grep -q "v2[0-9]" && echo "✅ Node.js OK" || echo "❌ Node.js 20+ requerido"
+      - pnpm -v | grep -qE "^[89]\." && echo "✅ pnpm OK" || echo "❌ pnpm 8+ requerido"
+      - python3 -V | grep -qE "3\.1[1-9]" && echo "✅ Python OK" || echo "❌ Python 3.11+ requerido"
+      - docker -v > /dev/null && echo "✅ Docker OK" || echo "❌ Docker requerido"
+      - echo ""
+      - echo "🔍 Verificando archivos .env..."
+      - test -f .env && echo "✅ .env existe" || echo "❌ Falta .env - ejecutar 'task setup'"
+      - test -f apps/ui-kiosk/.env && echo "✅ apps/ui-kiosk/.env existe" || echo "❌ Falta apps/ui-kiosk/.env"
+      - test -f services/orchestrator/.env && echo "✅ services/orchestrator/.env existe" || echo "❌ Falta services/orchestrator/.env"
+      - echo ""
+      - echo "🔍 Verificando API key de LLM..."
+      - grep -qE "^GEMINI_API_KEY=.+" services/orchestrator/.env && echo "✅ GEMINI_API_KEY configurada" || grep -qE "^GROK_API_KEY=.+" services/orchestrator/.env && echo "✅ GROK_API_KEY configurada" || echo "⚠️  No hay API key de LLM configurada en services/orchestrator/.env"
+
+  # ========== DESARROLLO (Laptop) ==========
+  dev:vps:
+    desc: "Arrancar VPS services en laptop (Docker)"
+    cmds:
+      - echo "🚀 Arrancando servicios VPS (Redis + PostgreSQL + Orchestrator)..."
+      - docker-compose -f infra/docker-compose.dev.yml up -d
+      - echo "✅ Servicios arrancados. Orchestrator en http://localhost:8765"
+
+  dev:ui:
+    desc: "Arrancar Svelte UI en laptop"
+    dir: apps/ui-kiosk
+    cmds:
+      - pnpm dev
+
+  dev:
+    desc: "Arrancar todo (VPS + UI)"
+    cmds:
+      - task: dev:vps
+      - echo "⏳ Esperando servicios VPS..."
+      - sleep 3
+      - echo "🎨 Arrancando UI..."
+      - task: dev:ui
+
+  dev:local:
+    desc: "Arrancar servicios localmente (sin Docker)"
+    cmds:
+      - ./scripts/run_all_local.sh
+
+  dev:local:stop:
+    desc: "Detener servicios locales"
+    cmds:
+      - ./scripts/run_all_local.sh --stop
+
+  dev:local:status:
+    desc: "Ver estado de servicios locales"
+    cmds:
+      - ./scripts/run_all_local.sh --status
+
+  # ========== TESTING ==========
+  test:
+    desc: "Ejecutar todos los tests"
+    cmds:
+      - task: test:types
+      - task: test:svelte
+      - task: test:py
+
+  test:types:
+    desc: "Build shared types"
+    dir: packages/shared-types
+    cmds:
+      - pnpm build
+
+  test:svelte:
+    desc: "Tests Svelte"
+    dir: apps/ui-kiosk
+    cmds:
+      - pnpm test
+
+  test:py:
+    desc: "Tests Python (todos)"
+    cmds:
+      - cd services/orchestrator && poetry run pytest ../../tests/ -v --cov || echo "⚠️  Error en tests"
+
+  test:unit:
+    desc: "Tests unitarios (rapidos, sin servicios)"
+    cmds:
+      - cd services/orchestrator && poetry run pytest ../../tests/unit/ -v
+
+  test:integration:
+    desc: "Tests de integracion (requiere servicios Docker)"
+    cmds:
+      - cd services/orchestrator && poetry run pytest ../../tests/integration/ -v -m integration
+
+  test:e2e:
+    desc: "Tests E2E (requiere todo corriendo)"
+    cmds:
+      - cd services/orchestrator && poetry run pytest ../../tests/e2e/ -v -m e2e
+
+  test:cov:
+    desc: "Tests con reporte de cobertura"
+    cmds:
+      - cd services/orchestrator && poetry run pytest ../../tests/ -v --cov --cov-report=term-missing --cov-report=html
+
+  test:cov-check:
+    desc: "Verificar cobertura minima (80%)"
+    cmds:
+      - cd services/orchestrator && poetry run pytest ../../tests/ --cov --cov-fail-under=80
+
+  # ========== BUILD ==========
+  build:ui:
+    desc: "Build UI para producción"
+    dir: apps/ui-kiosk
+    cmds:
+      - pnpm build
+      - echo "📦 Bundle size:"
+      - du -sh build/
+
+  build:pi:
+    desc: "Build UI para Raspberry Pi (ARM64)"
+    cmds:
+      - task: build:ui
+      - echo "✅ Build listo para Pi"
+
+  # ========== UTILS ==========
+  logs:
+    desc: "Ver logs VPS (usar SERVICE=orchestrator)"
+    cmds:
+      - docker-compose -f infra/docker-compose.dev.yml logs -f {{.SERVICE | default "orchestrator"}}
+
+  stop:
+    desc: "Detener servicios VPS"
+    cmds:
+      - docker-compose -f infra/docker-compose.dev.yml down
+      - echo "✅ Servicios detenidos"
+
+  clean:
+    desc: "Limpiar artifacts y containers"
+    cmds:
+      - docker-compose -f infra/docker-compose.dev.yml down -v
+      - rm -rf node_modules apps/*/node_modules packages/*/node_modules
+      - find . -name "__pycache__" -exec rm -rf {} + || true
+      - find . -name "*.pyc" -delete || true
+      - echo "✅ Limpieza completa"
+
+  healthcheck:
+    desc: "Verificar health de servicios"
+    cmds:
+      - echo "🏥 Verificando servicios..."
+      - curl -s http://localhost:8765/healthz | jq . || echo "❌ Orchestrator no responde"
+      - docker exec ai-kiosk-redis-dev redis-cli ping || echo "❌ Redis no responde"
+      - docker exec ai-kiosk-postgres-dev pg_isready -U kiosk || echo "❌ PostgreSQL no responde"
+
+  # ========== KIOSK MODE ==========
+  kiosk:
+    desc: "Lanza AI Kiosk en modo kiosk (pantalla completa)"
+    cmds:
+      - ./scripts/launch-kiosk.sh
+
+  kiosk:only:
+    desc: "Solo abre modo kiosk (servicios ya deben estar corriendo)"
+    cmds:
+      - ./scripts/launch-kiosk.sh
+
+  # ========== TRACING (F8) ==========
+  trace:collector:
+    desc: "Arrancar el servicio Trace Collector"
+    dir: services/trace-collector
+    cmds:
+      - poetry run python src/collector/main.py
+
+  trace:analyze:
+    desc: "Analizar una traza (TRACE_ID requerido)"
+    cmds:
+      - python scripts/analyze_trace.py {{.TRACE_ID | default ""}}
+
+  trace:list:
+    desc: "Listar trazas disponibles"
+    cmds:
+      - python scripts/analyze_trace.py --list
+
+  trace:golden:
+    desc: "Listar golden flows disponibles"
+    cmds:
+      - python scripts/analyze_trace.py --list-flows
+
+  trace:validate:
+    desc: "Validar traza contra golden flow (FLOW y TRACE_ID requeridos)"
+    cmds:
+      - python scripts/analyze_trace.py --golden-flow {{.FLOW}} {{.TRACE_ID | default ""}}
+
+  trace:viewer:
+    desc: "Arrancar el Trace Viewer web (puerto 9003)"
+    dir: apps/trace-viewer
+    cmds:
+      - pnpm install --ignore-scripts || true
+      - pnpm dev
+
+  trace:viewer:build:
+    desc: "Build del Trace Viewer para producción"
+    dir: apps/trace-viewer
+    cmds:
+      - pnpm install --ignore-scripts || true
+      - pnpm build
+
+  trace:full:
+    desc: "Arrancar Trace Collector + Trace Viewer (ambos en paralelo)"
+    cmds:
+      - echo "🚀 Arrancando Trace Collector (9002) y Trace Viewer (9003)..."
+      - |
+        (cd services/trace-collector && poetry run python src/collector/main.py) &
+        COLLECTOR_PID=$!
+        sleep 2
+        (cd apps/trace-viewer && pnpm install --ignore-scripts && pnpm dev) &
+        VIEWER_PID=$!
+        echo "✅ Servicios arrancados:"
+        echo "   Trace Collector: http://localhost:9002"
+        echo "   Trace Viewer:    http://localhost:9003"
+        echo ""
+        echo "Presiona Ctrl+C para detener ambos servicios"
+        trap "kill $COLLECTOR_PID $VIEWER_PID 2>/dev/null" EXIT
+        wait

@@ -1,0 +1,25 @@
+name: "Conversación multi-turn con referencia"
+description: "Usuario hace referencia a algo mencionado anteriormente"
+
+input:
+  text: "¿Y cuál es su horario?"
+  # Context: Previous turn asked about Demo Fashion location
+
+expected:
+  intent: "store_info"
+  info_type: "hours"
+  # Should resolve "su" to Demo Fashion from context
+  response_contains: []
+  response_not_contains:
+    - "qué tienda"
+    - "no entiendo"
+
+sla:
+  max_turn_latency_ms: 3000
+  max_asr_latency_ms: 500
+  max_llm_first_token_ms: 800
+
+tags:
+  - conversation
+  - context
+  - reference_resolution

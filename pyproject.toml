@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "ai-kiosk-agent-platform"
+version = "0.1.0"
+description = "Portfolio demo: conversational AI kiosk with edge UI, orchestration, voice, vision and tools."
+authors = ["Pau Gaspar"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.0"
+pytest-cov = "^4.1.0"
+black = "^23.12.1"
+ruff = "^0.1.9"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

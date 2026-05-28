@@ -1,0 +1,56 @@
+[
+  {
+    "id": "demo_fashion",
+    "name": "Demo Fashion",
+    "category": "fashion",
+    "floor": 1,
+    "location": "Level 1, north wing",
+    "description": "Synthetic fashion store used for portfolio/demo routing examples.",
+    "opening_hours": "10:00-22:00",
+    "phone": "+34 000 000 001",
+    "keywords": [
+      "fashion",
+      "clothes",
+      "demo fashion",
+      "shirts",
+      "dresses",
+      "men",
+      "women"
+    ]
+  },
+  {
+    "id": "urban_wear",
+    "name": "Urban Wear",
+    "category": "fashion",
+    "floor": 1,
+    "location": "Level 1, south wing",
+    "description": "Synthetic casual clothing store used to test store search and routing tools.",
+    "opening_hours": "10:00-21:30",
+    "phone": "+34 000 000 002",
+    "keywords": [
+      "urban wear",
+      "clothes",
+      "casual",
+      "fashion",
+      "accessories"
+    ]
+  },
+  {
+    "id": "coffee_point",
+    "name": "Coffee Point",
+    "category": "coffee",
+    "floor": 0,
+    "location": "Ground floor, main entrance",
+    "description": "Synthetic coffee shop used for demo data and navigation flows.",
+    "opening_hours": "08:00-22:00",
+    "phone": "+34 000 000 003",
+    "keywords": [
+      "coffee",
+      "cafe",
+      "drinks",
+      "snacks",
+      "wifi",
+      "coffee point"
+    ]
+  }
+]

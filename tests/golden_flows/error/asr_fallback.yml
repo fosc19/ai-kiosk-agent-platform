@@ -1,0 +1,45 @@
+name: "ASR fallback cuando API falla"
+description: "Sistema usa ASR local cuando la API de ASR falla"
+
+# This golden flow validates F6 ASR resilience:
+# When the primary ASR (Deepgram) fails, the system should
+# seamlessly fall back to local ASR (Whisper) and continue.
+
+input:
+  text: "¿Qué tiendas hay?"
+  # Simulate ASR API failure
+  simulate_error:
+    service: "asr_api"
+    error_type: "timeout"
+
+expected:
+  intent: "list_stores"
+
+  # Response should still work (using fallback)
+  response_contains:
+    - "tiendas"
+  response_not_contains:
+    - "error"
+    - "no puedo"
+
+  # Trace should show fallback was used
+  trace_events:
+    - type: "speech.asr_start"
+    - type: "speech.asr_fallback"  # Primary failed, using fallback
+    - type: "speech.asr_end"
+      provider: "local"  # Whisper was used
+
+  # Fallback should still produce valid transcription
+  transcription_confidence_min: 0.7
+
+sla:
+  # Fallback is slower but should still complete
+  max_asr_latency_ms: 2000  # Higher than normal (500ms) for local processing
+  max_turn_latency_ms: 5000
+
+tags:
+  - error_handling
+  - fallback
+  - asr
+  - f6
+  - resilience

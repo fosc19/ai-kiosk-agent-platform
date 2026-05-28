@@ -1,0 +1,27 @@
+name: "Preguntar por tienda desconocida"
+description: "Usuario pregunta por una tienda que no existe en el catálogo"
+
+input:
+  text: "¿Dónde está la tienda XYZ123?"
+
+expected:
+  intent: "clarify"
+  tool_calls:
+    - name: "resolve_store"
+      args_contain:
+        query: "xyz"
+  response_contains: []
+  response_not_contains:
+    - "planta"
+    - "gira a la"
+    - "sigue recto"
+
+sla:
+  max_turn_latency_ms: 3000
+  max_asr_latency_ms: 500
+  max_llm_first_token_ms: 800
+
+tags:
+  - navigation
+  - edge_case
+  - hallucination_check

@@ -1,0 +1,35 @@
+[project]
+name = "speech-service"
+version = "0.2.0"
+description = "Audio validation, VAD, ASR, TTS service"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.108.0",
+    "uvicorn[standard]>=0.25.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "structlog>=24.1.0",
+    # F3: VAD, ASR, TTS
+    "torch>=2.0.0",
+    "torchaudio>=2.0.0",
+    "numpy>=1.24.0",
+    "soundfile>=0.12.0",
+    # Premium providers (optional)
+    "deepgram-sdk>=3.0.0",
+    "elevenlabs>=1.0.0",
+    # Local providers
+    "faster-whisper>=1.0.0",
+    "piper-tts>=1.2.0",
+    "pydub>=0.25.0",  # Audio format conversion
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "httpx>=0.25.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

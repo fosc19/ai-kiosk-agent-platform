@@ -1,0 +1,51 @@
+name: "Referencia con contexto de tienda"
+description: "Usuario hace referencia usando 'ahí' después de preguntar por una tienda"
+
+# F6 context-aware conversation:
+# Turn 1: "¿Dónde está Demo Fashion?" -> System provides Demo Fashion info
+# Turn 2: "Llévame ahí" -> Should resolve "ahí" to Demo Fashion from context
+
+turns:
+  - input:
+      text: "¿Dónde está Demo Fashion?"
+    expected:
+      intent: "navigate"
+      store_query: "Demo Fashion"
+      updates_context:
+        current_store_id: "demo_fashion"
+        current_store_name: "Demo Fashion"
+
+  - input:
+      text: "¿Y cuál es su horario?"
+    expected:
+      intent: "store_info"
+      info_type: "hours"
+      # "su" should resolve to Demo Fashion from context
+      resolved_store: "Demo Fashion"
+      response_contains: []
+      response_not_contains:
+        - "qué tienda"
+        - "no entiendo"
+
+  - input:
+      text: "Llévame ahí"
+    expected:
+      intent: "navigate"
+      # "ahí" should resolve to Demo Fashion from context
+      resolved_store: "Demo Fashion"
+      response_contains:
+        - "demo_fashion"
+      response_not_contains:
+        - "qué tienda"
+
+sla:
+  max_turn_latency_ms: 3000
+  max_asr_latency_ms: 500
+  max_llm_first_token_ms: 800
+
+tags:
+  - conversation
+  - context
+  - reference_resolution
+  - multi_turn
+  - f6

@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Golden Flow",
+  "description": "Schema for AI Kiosk golden flow test definitions",
+  "type": "object",
+  "required": ["name", "input", "expected"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Human-readable name for the test"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of what this test validates"
+    },
+    "input": {
+      "type": "object",
+      "required": ["text"],
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "User input text"
+        }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "properties": {
+        "intent": {
+          "type": "string",
+          "enum": ["greeting", "goodbye", "navigate", "store_info", "list_stores", "clarify", "unknown"]
+        },
+        "info_type": {
+          "type": "string",
+          "enum": ["hours", "phone", "location", "general"]
+        },
+        "query_type": {
+          "type": "string",
+          "enum": ["count", "list"]
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "args_contain": {
+                "type": "object"
+              },
+              "result_contains": {
+                "type": "array",
+                "items": {"type": "string"}
+              }
+            }
+          }
+        },
+        "response_contains": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "response_not_contains": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "sla": {
+      "type": "object",
+      "properties": {
+        "max_turn_latency_ms": {"type": "integer"},
+        "max_asr_latency_ms": {"type": "integer"},
+        "max_llm_first_token_ms": {"type": "integer"},
+        "max_tts_first_chunk_ms": {"type": "integer"}
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

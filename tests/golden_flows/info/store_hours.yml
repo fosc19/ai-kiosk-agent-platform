@@ -1,0 +1,26 @@
+name: "Preguntar horario de tienda"
+description: "Usuario pregunta el horario de una tienda específica"
+
+input:
+  text: "¿Qué horario tiene Demo Fashion?"
+
+expected:
+  intent: "store_info"
+  info_type: "hours"
+  tool_calls:
+    - name: "resolve_store"
+      args_contain:
+        query: "demo_fashion"
+  response_contains:
+    - "horario"
+  response_not_contains:
+    - "no tengo información"
+
+sla:
+  max_turn_latency_ms: 3000
+  max_asr_latency_ms: 500
+  max_llm_first_token_ms: 800
+
+tags:
+  - info
+  - basic

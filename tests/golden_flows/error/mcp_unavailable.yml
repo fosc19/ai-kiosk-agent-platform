@@ -1,0 +1,46 @@
+name: "MCP Tools no disponible"
+description: "Sistema maneja gracefully cuando MCP Tools no está disponible"
+
+# This golden flow validates graceful degradation when MCP Tools service
+# is unavailable. The system should provide a helpful response instead
+# of crashing or returning an error.
+
+input:
+  text: "¿Dónde está Demo Fashion?"
+  simulate_error:
+    service: "mcp_tools"
+    error_type: "connection_refused"
+
+expected:
+  # Intent should still be classified correctly (LLM doesn't need MCP)
+  intent: "navigate"
+  store_query: "Demo Fashion"
+
+  # Response should be graceful degradation
+  response_contains:
+    - "no puedo acceder"
+  response_not_contains:
+    - "error"
+    - "exception"
+    - "traceback"
+
+  # No route data should be returned
+  route_data: null
+
+  # Trace should show MCP error
+  trace_events:
+    - type: "orch.turn_start"
+    - type: "orch.classify_end"
+    - type: "mcp.call_error"
+      tool: "resolve_store"
+    - type: "orch.turn_end"
+      status: "degraded"
+
+sla:
+  max_turn_latency_ms: 2000  # Should fail fast
+
+tags:
+  - error_handling
+  - mcp
+  - graceful_degradation
+  - f7

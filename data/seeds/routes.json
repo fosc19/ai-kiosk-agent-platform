@@ -1,0 +1,86 @@
+[
+  {
+    "store_id": "demo_fashion",
+    "from_location": "kiosk",
+    "steps": [
+      {
+        "order": 1,
+        "instruction": "Walk straight towards the central fountain",
+        "landmark": null,
+        "distance_meters": 50
+      },
+      {
+        "order": 2,
+        "instruction": "Turn right next to the fountain",
+        "landmark": "central fountain",
+        "distance_meters": 30
+      },
+      {
+        "order": 3,
+        "instruction": "Take the escalator to level 1",
+        "landmark": "escalator",
+        "distance_meters": 20
+      },
+      {
+        "order": 4,
+        "instruction": "Demo Fashion is on your left",
+        "landmark": null,
+        "distance_meters": 50
+      }
+    ]
+  },
+  {
+    "store_id": "urban_wear",
+    "from_location": "kiosk",
+    "steps": [
+      {
+        "order": 1,
+        "instruction": "Walk straight towards the central fountain",
+        "landmark": null,
+        "distance_meters": 50
+      },
+      {
+        "order": 2,
+        "instruction": "Turn left next to the fountain",
+        "landmark": "central fountain",
+        "distance_meters": 30
+      },
+      {
+        "order": 3,
+        "instruction": "Take the escalator to level 1",
+        "landmark": "escalator",
+        "distance_meters": 20
+      },
+      {
+        "order": 4,
+        "instruction": "Urban Wear is on your right",
+        "landmark": null,
+        "distance_meters": 40
+      }
+    ]
+  },
+  {
+    "store_id": "coffee_point",
+    "from_location": "kiosk",
+    "steps": [
+      {
+        "order": 1,
+        "instruction": "Turn right",
+        "landmark": null,
+        "distance_meters": 20
+      },
+      {
+        "order": 2,
+        "instruction": "Walk towards the main entrance",
+        "landmark": "main entrance",
+        "distance_meters": 40
+      },
+      {
+        "order": 3,
+        "instruction": "Coffee Point is next to the entrance, on your left",
+        "landmark": null,
+        "distance_meters": 10
+      }
+    ]
+  }
+]

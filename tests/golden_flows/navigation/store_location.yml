@@ -1,0 +1,28 @@
+name: "Preguntar ubicación de tienda"
+description: "Usuario pregunta dónde está una tienda conocida"
+
+input:
+  text: "¿Dónde está Demo Fashion?"
+
+expected:
+  intent: "navigate"
+  tool_calls:
+    - name: "resolve_store"
+      args_contain:
+        query: "demo_fashion"
+    - name: "get_route"
+  response_contains:
+    - "demo_fashion"
+  response_not_contains:
+    - "no sé"
+    - "no encontré"
+
+sla:
+  max_turn_latency_ms: 3000
+  max_asr_latency_ms: 500
+  max_llm_first_token_ms: 800
+  max_tts_first_chunk_ms: 500
+
+tags:
+  - navigation
+  - basic
