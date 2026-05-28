@@ -18,7 +18,7 @@ def create_tts_provider(
     *,
     # ElevenLabs config
     elevenlabs_api_key: Optional[str] = None,
-    elevenlabs_voice_id: str = "pNInz6obpgDQGcFmaJgB",
+    elevenlabs_voice_id: str = "your_voice_id",
     elevenlabs_model_id: str = "eleven_multilingual_v2",
     # Piper config
     piper_model_path: Optional[str] = None,

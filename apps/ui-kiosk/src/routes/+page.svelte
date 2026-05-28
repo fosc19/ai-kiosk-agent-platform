@@ -22,14 +22,14 @@
   }
 
   onMount(() => {
-    console.log('[App] Connecting to VPS...');
+    console.log('[App] Connecting to backend...');
     connect();
 
     // Initialize UI state sync with WebSocket
     initUIStateSync();
 
     return () => {
-      console.log('[App] Disconnecting from VPS...');
+      console.log('[App] Disconnecting from backend...');
       disconnect();
     };
   });
@@ -47,25 +47,25 @@
     <div class="start-overlay">
       <div class="start-content">
         <h2>AI Kiosk Agent Platform</h2>
-        <p>Presiona para activar el asistente</p>
+        <p>Press to activate the assistant</p>
         <button class="start-button" on:click={handleStart}>
-          Iniciar
+          Start
         </button>
       </div>
     </div>
   {/if}
   <header>
-    <h1>AI Kiosk Agent Platform MVP</h1>
+    <h1>AI Kiosk Agent Platform</h1>
     <div class="connection-status">
       {#if $wsState.connected}
         <span class="status-dot connected"></span>
-        <span>Conectado al VPS</span>
+        <span>Connected</span>
       {:else if $wsState.reconnecting}
         <span class="status-dot reconnecting"></span>
-        <span>Reconectando...</span>
+        <span>Reconnecting...</span>
       {:else}
         <span class="status-dot disconnected"></span>
-        <span>Desconectado</span>
+        <span>Disconnected</span>
       {/if}
     </div>
   </header>
@@ -74,12 +74,12 @@
     <Avatar />
   </div>
 
-  <!-- F3: Transcript and Response Display -->
+  <!-- Transcript and Response Display -->
   {#if initialized && ($transcript || $sayText)}
     <div class="conversation-panel">
       {#if $transcript}
         <div class="transcript">
-          <span class="label">Tu:</span>
+          <span class="label">You:</span>
           <span class="text">{$transcript.text}</span>
         </div>
       {/if}
@@ -93,7 +93,7 @@
   {/if}
 
   <footer>
-    <p>F6 - Full Pipeline with Navigation</p>
+    <p>Full Pipeline with Navigation</p>
   </footer>
 
   <!-- Route navigation overlay -->
@@ -233,7 +233,7 @@
     transform: scale(0.98);
   }
 
-  /* F3: Conversation panel styles */
+  /* Conversation panel styles */
   .conversation-panel {
     position: fixed;
     bottom: 4rem;

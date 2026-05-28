@@ -19,7 +19,7 @@ class ElevenLabsTTS(TTSProvider):
     def __init__(
         self,
         api_key: str,
-        voice_id: str = "pNInz6obpgDQGcFmaJgB",  # Spanish female voice
+        voice_id: str = "your_voice_id",
         model_id: str = "eleven_multilingual_v2",
     ):
         """Initialize ElevenLabs TTS.

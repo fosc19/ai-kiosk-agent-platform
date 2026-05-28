@@ -1,20 +1,20 @@
 import { z } from 'zod';
 
 // ============================================================
-// WebSocket Message Types - Pi ↔ VPS
+// WebSocket Message Types - Client ↔ Server
 // ============================================================
 
 export enum MessageType {
-  // Pi → VPS
+  // Client → Server
   SESSION_START = 'session.start',
   CAMERA_FRAME = 'camera.frame',
   AUDIO_UTTERANCE = 'audio.utterance',
-  AUDIO_CHUNK = 'audio.chunk', // F3: streaming audio chunks
+  AUDIO_CHUNK = 'audio.chunk', // streaming audio chunks
   USER_TEXT = 'user.text',
   CONTROL_STOP_TTS = 'control.stop_tts',
-  PLAYBACK_COMPLETE = 'playback.complete', // F3: TTS playback finished
+  PLAYBACK_COMPLETE = 'playback.complete', // TTS playback finished
 
-  // VPS → Pi
+  // Server → Client
   PRESENCE_UPDATE = 'presence.update',
   UI_STATE = 'ui.state',
   UI_SAY = 'ui.say',
@@ -34,7 +34,7 @@ export enum UIState {
 }
 
 // ============================================================
-// Pi → VPS Messages
+// Client → Server Messages
 // ============================================================
 
 export const SessionStartSchema = z.object({
@@ -111,7 +111,7 @@ export const PlaybackCompleteSchema = z.object({
 export type PlaybackCompleteMessage = z.infer<typeof PlaybackCompleteSchema>;
 
 // ============================================================
-// VPS → Pi Messages
+// Server → Client Messages
 // ============================================================
 
 export const PresenceUpdateSchema = z.object({

@@ -38,7 +38,7 @@ class Settings(BaseSettings):
 
     # TTS settings (ElevenLabs - premium)
     elevenlabs_api_key: Optional[str] = None
-    tts_voice_id: str = "pNInz6obpgDQGcFmaJgB"  # Spanish female
+    tts_voice_id: str = "your_voice_id"
     tts_model_id: str = "eleven_multilingual_v2"
 
     # TTS settings (Piper - local)

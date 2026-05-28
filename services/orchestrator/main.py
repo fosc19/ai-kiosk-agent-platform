@@ -1,6 +1,6 @@
 """
-Orchestrator Service - Core agente conversacional
-FastAPI + WebSocket server para comunicación Pi ↔ VPS
+Orchestrator Service — Core conversational agent
+FastAPI + WebSocket server for client ↔ server communication
 """
 
 import base64
@@ -438,7 +438,7 @@ async def check_barge_in(
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     """
-    Main WebSocket endpoint for Pi ↔ VPS communication
+    Main WebSocket endpoint for client ↔ server communication
     """
     await websocket.accept()
     client_info = f"{websocket.client.host}:{websocket.client.port}"

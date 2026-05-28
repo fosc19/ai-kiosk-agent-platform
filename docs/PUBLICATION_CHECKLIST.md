@@ -1,9 +1,9 @@
 # Publication checklist
 
-Before making the repository public:
+Running checklist for maintaining the public repository:
 
 - [ ] Confirm no API keys, access tokens or real credentials are present.
-- [ ] Confirm no private client names, private datasets, logs or traces are present.
+- [ ] Confirm no private names, datasets, logs or traces are present.
 - [ ] Confirm no private audio, images, models or generated media assets are present.
 - [ ] Add screenshots/GIFs to `docs/assets/` if available.
 - [ ] Run a secret scan with your preferred tool.

@@ -1,68 +1,68 @@
 # Trace Viewer - Quick Start
 
-Guía rápida para empezar a usar el Trace Viewer en 5 minutos.
+Quick guide to start using the Trace Viewer in 5 minutes.
 
-## Paso 1: Arrancar el Trace Collector
+## Step 1: Start the Trace Collector
 
-Desde el root del proyecto:
+From the project root:
 
 ```bash
 task trace:collector
 ```
 
-Verás algo como:
+You should see something like:
 ```
 🚀 Trace Collector starting on http://localhost:9002
 ```
 
-Mantén este proceso corriendo.
+Keep this process running.
 
-## Paso 2: Arrancar el Trace Viewer
+## Step 2: Start the Trace Viewer
 
-En otra terminal:
+In another terminal:
 
 ```bash
 task trace:viewer
 ```
 
-O si prefieres arrancar ambos al mismo tiempo:
+Or start both at the same time:
 
 ```bash
 task trace:full
 ```
 
-El viewer estará en `http://localhost:9003`
+The viewer will be at `http://localhost:9003`
 
-## Paso 3: Generar Trazas de Prueba
+## Step 3: Generate Test Traces
 
-Para tener datos que visualizar, necesitas ejecutar el sistema y generar algunas sesiones.
+To have data to visualize, you need to run the system and generate some sessions.
 
-### Opción A: Usando el sistema completo
+### Option A: Using the full system
 
 ```bash
-# Terminal 1: VPS services
-task dev:vps
+# Terminal 1: backend services
+task dev:services
 
 # Terminal 2: UI
 task dev:ui
 
-# Interactúa con la UI para generar trazas
+# Interact with the UI to generate traces
 ```
 
-### Opción B: Usando un Golden Flow
+### Option B: Using a Golden Flow
 
 ```bash
-# Ejecutar un test que genera trazas
+# Run a test that generates traces
 task trace:golden FLOW=navigation/store_location.yml
 ```
 
-## Paso 4: Visualizar
+## Step 4: Visualize
 
-1. Abre `http://localhost:9003` en tu navegador
-2. Verás la lista de trazas disponibles
-3. Haz click en "View" para ver el waterfall de una traza específica
+1. Open `http://localhost:9003` in your browser
+2. You'll see the list of available traces
+3. Click "View" to see the waterfall of a specific trace
 
-## Interpretando el Waterfall
+## Interpreting the Waterfall
 
 ```
 Turn turn_001 (Total: 2345ms) ━━━━━━━━━━━━━━━━━━━━━
@@ -77,17 +77,17 @@ Turn turn_001 (Total: 2345ms) ━━━━━━━━━━━━━━━━�
      0ms    500ms   1000ms   1500ms   2000ms
 ```
 
-### Colores
+### Colors
 
-- 🔵 Azul = Orchestrator
-- 🟢 Verde = MCP Tools
-- 🟡 Amarillo = ASR (transcripción)
-- 🟠 Naranja = TTS (síntesis)
-- 🔴 Rojo = Violación de SLA
+- 🔵 Blue = Orchestrator
+- 🟢 Green = MCP Tools
+- 🟡 Yellow = ASR (transcription)
+- 🟠 Orange = TTS (synthesis)
+- 🔴 Red = SLA violation
 
-### Barras Rojas = Problemas
+### Red Bars = Problems
 
-Si ves barras rojas, significa que ese componente excedió el SLA:
+If you see red bars, that component exceeded the SLA:
 
 - Turn total > 3000ms
 - ASR > 500ms
@@ -99,67 +99,65 @@ Si ves barras rojas, significa que ese componente excedió el SLA:
 ### "Cannot connect to Trace Collector"
 
 ```bash
-# Verificar si está corriendo
+# Check if it's running
 curl http://localhost:9002/healthz
 
-# Si no responde, arrancarlo
+# If not responding, start it
 task trace:collector
 ```
 
 ### "No traces found"
 
-Normal si es la primera vez. Genera trazas ejecutando:
+This is normal on first run. Generate traces:
 
 ```bash
-# Opción rápida
+# Quick option
 task trace:golden
 
-# O usa el sistema completo
-task dev:vps
+# Or use the full system
+task dev:services
 task dev:ui
-# Interactúa con la UI
+# Interact with the UI
 ```
 
-### Puerto 9003 ocupado
+### Port 9003 in use
 
 ```bash
-# Encontrar qué proceso lo usa
+# Find the process using it
 lsof -i :9003
 
-# Matar el proceso
+# Kill the process
 kill -9 <PID>
 
-# O cambiar el puerto en vite.config.ts
+# Or change the port in vite.config.ts
 ```
 
-## Comandos Útiles
+## Useful Commands
 
 ```bash
-# Ver solo el viewer
+# View only the viewer
 task trace:viewer
 
-# Ver solo el collector
+# View only the collector
 task trace:collector
 
-# Ver ambos (recomendado)
+# View both (recommended)
 task trace:full
 
-# Verificar health
+# Health check
 curl http://localhost:9002/healthz
 curl http://localhost:9003
 
-# Listar trazas via API
+# List traces via API
 curl http://localhost:9002/traces | jq .
 
-# Ver detalle de una traza
+# View trace detail
 curl http://localhost:9002/traces/session_abc123 | jq .
 ```
 
-## Próximos Pasos
+## Next Steps
 
-1. **Integrar con CI/CD** - Captura trazas en tests automáticos
-2. **Comparar Runs** - Ver diferencias entre versiones
-3. **Golden Flow Regression** - Detectar degradación de performance
-4. **Exportar Reportes** - PDFs con waterfalls para documentación
-
-Ver [OBSERVABILITY_PLAN.md](../../docs/OBSERVABILITY_PLAN.md) para el roadmap completo.
+1. **CI/CD Integration** - Capture traces in automated tests
+2. **Compare Runs** - View differences between versions
+3. **Golden Flow Regression** - Detect performance degradation
+4. **Export Reports** - PDFs with waterfalls for documentation

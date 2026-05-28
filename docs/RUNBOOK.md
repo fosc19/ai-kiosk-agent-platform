@@ -1,9 +1,9 @@
 # Runbook
 
-## Start local services
+## Start backend services
 
 ```bash
-task dev:vps
+task dev:services
 ```
 
 ## Start kiosk UI

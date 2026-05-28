@@ -32,4 +32,4 @@ The project demonstrates the ability to design and build beyond the prompt layer
 
 ## Portfolio scope
 
-This public edition uses synthetic demo data and sanitized configuration. It preserves the architecture and representative code patterns while removing private assets, production secrets and internal planning material.
+This public edition uses synthetic demo data and sanitized configuration. It preserves the architecture and representative code patterns while removing private assets, production configuration and internal planning material.

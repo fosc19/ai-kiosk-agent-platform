@@ -23,13 +23,13 @@ cp services/mcp-tools/.env.example services/mcp-tools/.env
 pnpm install
 ```
 
-## Start services
+## Start backend services
 
 ```bash
-task dev:vps
+task dev:services
 ```
 
-## Start UI
+## Start kiosk UI
 
 ```bash
 task dev:ui

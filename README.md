@@ -61,7 +61,7 @@ infra                  Docker Compose and service images
 **Frontend:** Svelte, TypeScript, Vite, Web Audio API, WebSockets  
 **Backend:** Python, FastAPI, Pydantic, SQLAlchemy, async services  
 **AI systems:** LLM adapters, tool calling, ASR/TTS adapters, VAD, vision boundary  
-**Infra:** Docker Compose, Redis, PostgreSQL, Linux/VPS-oriented deployment  
+**Infra:** Docker Compose, Redis, PostgreSQL, Linux-oriented deployment  
 **Quality:** golden flows, trace analysis, unit/integration test structure
 
 ---
@@ -87,7 +87,7 @@ pnpm install
 Start backend dependencies and services:
 
 ```bash
-task dev:vps
+task dev:services
 ```
 
 Start the kiosk UI:
@@ -102,25 +102,19 @@ Run checks/tests:
 task test
 ```
 
-External AI/voice providers are optional and must be configured with your own API keys. This public portfolio edition contains no production secrets, no real client data and no private media assets.
+External AI/voice providers are optional and must be configured with your own API keys. This public portfolio edition contains no production secrets, no real user data and no private media assets.
 
 ---
 
-## Suggested screenshots for GitHub
+## Demo assets
 
-Add these to `docs/assets/` before publishing the final repo:
-
-1. kiosk UI in idle/listening/thinking/speaking states;
-2. a simulated conversation turn;
-3. route/action overlay;
-4. trace viewer waterfall;
-5. real photo or diagram of the physical kiosk/prototype if available.
+This repository is prepared to include optional screenshots and diagrams under `docs/assets/`, such as kiosk UI states, simulated conversation flows, route/action overlays, trace waterfalls and physical kiosk/prototype diagrams.
 
 ---
 
 ## Portfolio note
 
-This repository is a sanitized portfolio edition. The goal is to show architecture, service boundaries and implementation patterns without exposing private client data, production configuration or internal planning material.
+This repository is a sanitized portfolio edition. The goal is to show architecture, service boundaries and implementation patterns without exposing private data, production configuration or internal planning material.
 
 ## License
 
