@@ -48,11 +48,6 @@ tasks:
       - docker compose -f infra/docker-compose.dev.yml up -d
       - echo "✅ Backend services started. Orchestrator at http://localhost:8765"
 
-  dev:vps:
-    desc: "Alias for dev:services (deprecated)"
-    cmds:
-      - task: dev:services
-
   dev:ui:
     desc: "Start Svelte kiosk UI"
     dir: apps/ui-kiosk

@@ -124,7 +124,7 @@ services:
       VISION_SERVICE_URL: http://vision:9003
       MCP_TOOLS_URL: http://mcp-tools:9002
       LLM_MODE: mock
-      API_KEYS: dev_local_key_change_me
+      API_KEYS: demo_local_api_key
       LOG_LEVEL: DEBUG
     volumes:
       - ../services/orchestrator:/app

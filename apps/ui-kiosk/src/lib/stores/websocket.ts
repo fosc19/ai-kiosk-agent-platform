@@ -8,7 +8,7 @@ interface WebSocketState {
   error: string | null;
 }
 
-const WS_URL = import.meta.env.VITE_VPS_URL || 'ws://localhost:8765/ws';
+const WS_URL = import.meta.env.VITE_BACKEND_WS_URL || 'ws://localhost:8765/ws';
 const RECONNECT_DELAY = 2000;
 const MAX_RECONNECT_ATTEMPTS = Infinity;
 

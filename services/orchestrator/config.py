@@ -41,7 +41,7 @@ class Settings(BaseSettings):
 
     # Security
     allowed_kiosk_ids: Union[str, List[str]] = ["pi-kiosk-dev", "pi-kiosk-001", "pi-kiosk-002"]
-    api_keys: Union[str, List[str]] = ["dev_local_key_change_me"]
+    api_keys: Union[str, List[str]] = ["demo_local_api_key"]
 
     @field_validator("allowed_kiosk_ids", "api_keys", mode="after")
     @classmethod
